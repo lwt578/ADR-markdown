@@ -6,7 +6,7 @@ library(scales)
 
 
 
-df <- read.xlsx("不良反应明细.xlsx")
+df <- read.xlsx("不良反应明细2022.xlsx")
 df$不良反应结果 <- parse_factor(df$不良反应结果,
                           levels = c("痊愈","好转","未好转","不详","有后遗症","死亡")) 
 df$日期 <- ymd(df$日期)

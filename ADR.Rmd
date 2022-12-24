@@ -1,6 +1,11 @@
 ---
 title: "2022年1-3月药品不良反应分析"
-output: word_document
+output: html_document
+params:
+  starttime:1 
+  endtime:3 
+  year:2022 
+  month:7
 ---
 
 ```{r include=FALSE}
@@ -17,13 +22,14 @@ library(openxlsx)
 library(flextable)
 library(scales)
 
-starttime <- 1
-endtime <- 3
 
 df <- read.xlsx("不良反应明细2022.xlsx")
 df$不良反应结果 <- parse_factor(df$不良反应结果,
                           levels = c("痊愈","好转","未好转","不详","有后遗症","死亡")) 
 df$日期 <- ymd(df$日期)
+
+starttime <- 1
+endtime <- 3
 
 df2 <- df%>%
   filter(between(month(日期),starttime,endtime))
@@ -52,7 +58,7 @@ tb1 <- align(tb1,align = "center",part = "all")
 
 ```
 
-    2021年10-12月，我院共向国家药品不良反应监测系统上报药品不良反应（ADR）报告`r c`例。通过对此`r c`例报告进行统计分析，结果如下：
+    `r format(Sys.Date(),"%Y")`年`r starttime`-`r endtime`月，我院共向国家药品不良反应监测系统上报药品不良反应（ADR）报告`r c`例。通过对此`r c`例报告进行统计分析，结果如下：
 
 ## 1 患者基本信息
 
@@ -79,11 +85,11 @@ ab <- df2%>%
 ab <-mutate(ab,占比= percent(数量/sum(ab$数量),0.1))
 
 
-tb21 <- flextable(drug,cwidth = 2)
+tb21 <- flextable(drug,cwidth = 4)
 tb21 <- align(tb21,align = "center",part = "all")%>%
   autofit()
 
-tb22 <- flextable(ab,cwidth = 2.2)
+tb22 <- flextable(ab,cwidth = 5)
 tb22 <- align(tb22,align = "center",part = "all")%>%
   autofit()
 
@@ -112,7 +118,7 @@ dosage <- df2%>%
   mutate(占比= percent(数量/c,0.1))
 
 
-tb23 <- flextable(dosage,cwidth = 2)
+tb23 <- flextable(dosage,cwidth = 4)
 tb23 <- align(tb23,align = "center",part = "all")%>%
   autofit()
 
@@ -148,7 +154,7 @@ class <- df2%>%
 outcome <- df2%>% 
   count(不良反应结果,name = "数量",.drop=FALSE)
 
-tb3 <- flextable(class,cwidth = 2.3)
+tb3 <- flextable(class,cwidth = 4)
 tb3 <- align(tb3,align = "center",part = "all")%>%
   autofit()
 
@@ -188,4 +194,4 @@ tb3
 开展ADR监测工作需要医务人员的共同努力，全面配合。在后续工作中，临床药师需积极进行业务学习，掌握药品的适应症、用法用量、禁忌症等，促进合理用药，增强预防ADR的能力。对于特殊人群，特别是老年人和静脉用药患者的用药过程中要密切观察病情变化，发生ADR及时处理。做好药物不良反应事件的管理工作是医务人员的责任，与医疗安全息息相关，希望我院医务人员提高对ADR监测工作的积极性和主动性，进一步推进此项工作，促进临床合理用药。
 
 青岛市李沧区中心医院\
-2022年7月
+`r format(Sys.Date(),"%Y")`年`r format(Sys.Date(),"%m")`月
